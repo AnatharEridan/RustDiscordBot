@@ -1,6 +1,5 @@
 const WebSocket = require('ws');
 var Discord = require('discord.io');
-var sleep = require('sleep');
 var mysql = require('mysql');
 var bodyParser = require("body-parser");
 var express = require('express');
