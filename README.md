@@ -4,17 +4,17 @@
 
 **Системные требования**:
 * **Node.js 8.6.0** на других весиях не тестировал
-* **Mysql server** 
+* **Mysql server**
 
 **Необходимые плагин npm**:
 * **discord.io** - `npm install izy521/discord.io`
 * **mysql** - `npm install mysql`
 * **body-parser** - `npm install body-parser`
 * **WebSocket** - `npm install ws`
-* **express** - `npm install ws`
+* **express** - `npm install express`
 
 так же в репозитории имеется плагин для сервера Rust.
 
+v.0.2.0 - Добавлена система выдачи бонус за привязку аккаунта к дискорд боту
 
 по мере возможности буду улучшать.
-
