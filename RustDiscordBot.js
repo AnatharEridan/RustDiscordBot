@@ -12,7 +12,8 @@ var ModerRole = ""; //ID роли Модератора
 var VipRole = ""; //ID роли Випа
 var ChatRole = ""; //ID Роли для доступа к чату
 var ChatChannel = ""; //ID Канала где будет чат
-var DbTable = ""; //Название таблицы в базе Mysql
+var RegisterTable = ""; //Название таблицы в базе Mysql
+var BonusTable = ""; //Название таблицы в базе Mysql
 var RconIP = ''; //Тут и так понятно
 var RconPort = ''; //Тут и так понятно
 var RconPassword = ''; //Тут и так понятно
@@ -30,8 +31,8 @@ app.use(bodyParser.json());
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : 'root',
-  database : 'password'
+  password : 'password',
+  database : 'DataBase'
 });
 connection.connect();
 const prefix = "!";
@@ -100,11 +101,11 @@ cmd = args[0];
 		if(cmd === "confirm")
 		{
 			var sql = "SELECT steamid,timecode,confirmed FROM ?? WHERE timecode = ?";
-			var query = connection.query(sql, [DbTable, args[1]], function(err, result) {
+			var query = connection.query(sql, [RegisterTable, args[1]], function(err, result) {
 				var steamid = result[0].steamid;
 				if(result.length!==0 && result[0].confirmed==="false"){
 					var sql2 = "UPDATE ?? SET `discordid` =?,`confirmed` =? WHERE `timecode` = ?";
-					var query2 = connection.query(sql2, [DbTable, userID,"true",args[1]], function(err, result) {
+					var query2 = connection.query(sql2, [RegisterTable, userID,"true",args[1]], function(err, result) {
 
 					confirmregister(steamid+" "+userID+" true");
 					bot.addToRole({"serverID":serverID,"userID":userID,"roleID":ChatRole},function(err,response) {
@@ -131,6 +132,41 @@ cmd = args[0];
 			});
 
 		}
+    if(cmd === "GetBonus"){
+    var sql = "SELECT steamid,discordid,confirmed FROM ?? WHERE discordid = ?";
+    var query = connection.query(sql, [RegisterTable, userID], function(err, result) {
+      var steamid = result[0].steamid;
+      var discordid = result[0].discordid;
+      if(result[0].confirmed=="true"){
+        var sql3 = "SELECT steamid,discordid,gived FROM ?? WHERE discordid = ?";
+        var query3 = connection.query(sql3, [BonusTable, userID], function(err, result3) {
+        if(result3.length===0){
+        var sql2 = "INSERT INTO ?? SET `steamid` = ?, `discordid` = ?, `gived` = ?";
+      var query2 = connection.query(sql2, [BonusTable, steamid, discordid, "false"], function(err, result2) {
+        SendBonus("|"+steamid+"|"+discordid+"|");
+      });
+    }else if(result3[0].gived==="true"){
+      bot.sendMessage({
+      to: userID,
+      message: 'Вы уже получали бонус'
+      });
+    }
+      });
+      }
+      if(result[0].confirmed=="false"){
+        bot.sendMessage({
+        to: userID,
+        message: 'Вы не подтвердили вашу регистраци напишите !confirm и номер который вам выдан был в игре'
+        });
+      }
+      if(result.length===0){
+        bot.sendMessage({
+        to: userID,
+        message: 'Извините но вы не зарегистрированы,напишите в игре /disreg'
+        });
+      }
+  });
+    }
 }else{
 var AdminRol = bot.servers[serverID].members[userID].roles.includes(AdminRole);
 var ModerRol = bot.servers[serverID].members[userID].roles.includes(ModerRole)
@@ -183,6 +219,14 @@ function confirmregister(message) {
       });
       socket.send(packet);
 }
+function SendBonus(message) {
+   const packet = JSON.stringify({
+     Identifier: -1,
+     Message: `disbonus ${message}`,
+     Name: 'WebRcon',
+   });
+   socketpve.send(packet);
+ }
 function mute(message) {
    const packet = JSON.stringify({
      Identifier: -1,
@@ -192,12 +236,36 @@ function mute(message) {
    socket.send(packet);
  }
 
+ app.post('/rustbonus', function (req, res) {
+    var post = req.body;
+ console.log(post);
+     if(post.Check == "NotFind"){
+       bot.sendMessage({
+       to: post.Discordid,
+       message: 'я не нашел вас в игре,вам нужно зайти на наш сервер'
+       });
+     }
+     if(post.Check == "Gived"){
+       var sql2 = "UPDATE ?? SET `gived` =? WHERE `steamid` = ?";
+       var query2 = connection.query(sql2, [BonusTable, "true",post.Steamid], function(err, result) {
+       console.log(err);
+       bot.sendMessage({
+       to: post.Discordid,
+       message: 'Вам выдан бонус за регистрацию в дискорде'
+       });
+
+       });
+
+     }
+
+ });
+
  app.post('/rustrequest', function (req, res) {
 var post = req.body;
   if(post.Check == "DisReg")
   {
  	  var sql = "INSERT INTO ?? SET `steamid` = ?, `discordid` = ?, `timecode` = ?, `confirmed` = ?";
-    var query = connection.query(sql,[DbTable, post.Steamid, "0", post.TimeCode, "false"], function(err, result) {
+    var query = connection.query(sql,[RegisterTable, post.Steamid, "0", post.TimeCode, "false"], function(err, result) {
       console.log(err);
       console.log(result);
       if(err==null)

@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using Oxide.Core;
 using Oxide.Core.Libraries;
 using Oxide.Core.Libraries.Covalence;
 
 
 namespace Oxide.Plugins {
-	[Info("BotRegister", "Anathar", "0.1.1")]
+	[Info("BotRegister", "Anathar", "0.1.2")]
 	[Description("Register in bot")]
 	public class BotRegister : RustPlugin {
 		private System.Random random = new System.Random();
@@ -20,6 +22,7 @@ namespace Oxide.Plugins {
 		private string PlayerPrefix = "<color=orange>[Из Discord'a]</color>";
 
 		private string BotUrl = "http://ip:3000/rustrequest";
+		private string BotBonusUrl = "http://ip:3000/rustbonus";
 		public class StoredData {
 			public Dictionary<ulong, PlayerInfo> PlayerInfo = new Dictionary<ulong, PlayerInfo>();
 		}
@@ -30,6 +33,40 @@ namespace Oxide.Plugins {
 			public int TimedCode;
 			public bool Confirm;
 			public PlayerInfo() { }
+		}
+
+		private static ConfigFile config;
+
+		public class ConfigFile
+		{
+			public bool Bonus { get; set; } = true;
+			[JsonProperty(PropertyName = "BonusItems")]
+			[DefaultValue(null)]
+			public Dictionary<string, object> BonusItems { get; set; } = new Dictionary<string, object>
+			{
+				{"rifle.ak", 1},
+				{"ammo.rifle",200}
+				{"supply.signal", 1}
+			};
+		}
+
+		protected override void LoadDefaultConfig()
+		{
+			var config = new ConfigFile();
+			Config.WriteObject(config);
+		}
+
+		protected override void SaveConfig() => Config.WriteObject(config);
+		protected override void LoadConfig()
+		{
+			base.LoadConfig();
+			try
+			{
+				config = Config.ReadObject<ConfigFile>();
+				if (config == null)
+					LoadDefaultConfig();
+			}
+			catch { LoadDefaultConfig(); }
 		}
 
 		private void SaveData() => Interface.Oxide.DataFileSystem.WriteObject(Name, DataBase);
@@ -43,9 +80,10 @@ namespace Oxide.Plugins {
 		}
 
 		private void Unload() {
+			SaveConfig();
 			SaveData();
 		}
-		
+
 		private void OnPlayerInit(BasePlayer player)
 		{
 			if (!DataBase.PlayerInfo.ContainsKey(player.userID)) return;
@@ -54,13 +92,14 @@ namespace Oxide.Plugins {
 		}
 
 		private void OnServerInitialized() {
+			LoadConfig();
 			LoadData();
 		}
 
 		private static void Reply(string Message, BasePlayer player) {
 			player.ChatMessage(Message);
 		}
-		
+
 		public string SimpleColorFormat(string text, bool removeTags = false)
 		{
 			/*  Simple Color Format ( v3.0 ) by SkinN - Modified by LaserHydra
@@ -90,16 +129,16 @@ namespace Oxide.Plugins {
 			var headers = new Dictionary<string, string> {
 				{"Authorization", "2423452"}
 			};
-			
+
 			var data = new PlayerInfo {
 				DisplayName = player.displayName,
 				DiscordID = 0,
 				TimedCode = random.Next(1, 9999999),
 				Confirm = false
 			};
-			
+
 			DataBase.PlayerInfo.Add(Convert.ToUInt64(player.userID), data);
-		
+
 			webrequest.Enqueue(BotUrl,
 				"Check=DisReg&Steamid="+player.UserIDString+"&TimeCode="+data.TimedCode,
 				(code, response) => {
@@ -114,7 +153,7 @@ namespace Oxide.Plugins {
 				RequestMethod.POST,
 				headers,
 				timeout);
-			
+
 		}
 
 		[ConsoleCommand("disconfirm")]
@@ -124,6 +163,47 @@ namespace Oxide.Plugins {
 			DataBase.PlayerInfo[ulong.Parse(arg.Args[0])].DiscordID = ulong.Parse(arg.Args[1]);
 			DataBase.PlayerInfo[ulong.Parse(arg.Args[0])].Confirm = bool.Parse(arg.Args[2]);
 			SaveData();
+		}
+		[ConsoleCommand("disbonus")]
+				private void DiscordBonus(ConsoleSystem.Arg arg) {
+					var msg = arg.Args[0].Substring(0, 1);
+					if (msg != "|") return;
+					string DiscordJoin = string.Join(" ", arg.Args);
+					string[] DBS = DiscordJoin.Split('|');
+					const float timeout = 1000f;
+					var headers = new Dictionary<string, string> {
+						{"Authorization", "2423452"}
+					};
+					var findPlayer = (BasePlayer.FindByID(ulong.Parse(DBS[1])));
+					if (findPlayer == null)
+					{
+
+						webrequest.Enqueue(BotBonusUrl,
+							"Check=NotFind&Steamid="+DBS[1]+"&Discordid="+DBS[2],
+							(code, response) => {},
+							this,
+							RequestMethod.POST,
+							headers,
+							timeout);
+							return;
+					}
+
+					webrequest.Enqueue(BotBonusUrl,
+						"Check=Gived&Steamid="+DBS[1]+"&Discordid="+DBS[2],
+						(code, response) => {},
+						this,
+						RequestMethod.POST,
+						headers,
+						timeout);
+
+					for (int i = 0; i < config.BonusItems.Count; i++)
+					{
+						if (Convert.ToInt32(config.BonusItems.ElementAt(i).Value) > 0)
+						{
+							Item gift = ItemManager.CreateByName(config.BonusItems.ElementAt(i).Key, Convert.ToInt32(config.BonusItems.ElementAt(i).Value));
+							 findPlayer.GiveItem(gift);
+						}
+				}
 		}
 
 		[ConsoleCommand("dissay")]

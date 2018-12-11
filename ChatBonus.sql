@@ -10,19 +10,18 @@ Target Server Type    : MYSQL
 Target Server Version : 50558
 File Encoding         : 65001
 
-Date: 2018-12-03 21:12:32
+Date: 2018-12-11 21:59:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for ChatRegistred
+-- Table structure for ChatBonus
 -- ----------------------------
-DROP TABLE IF EXISTS `ChatRegistred`;
-CREATE TABLE `ChatRegistred` (
-  `steamid` varchar(255) NOT NULL,
+DROP TABLE IF EXISTS `ChatBonus`;
+CREATE TABLE `ChatBonus` (
+  `steamid` varchar(255) DEFAULT NULL,
   `discordid` varchar(255) DEFAULT NULL,
-  `timecode` varchar(255) DEFAULT NULL,
-  `confirmed` varchar(255) DEFAULT NULL
+  `gived` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET FOREIGN_KEY_CHECKS=1;
