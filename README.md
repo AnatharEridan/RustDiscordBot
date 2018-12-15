@@ -33,21 +33,21 @@
 The plugin was written for myself that it would be convenient to communicate with the players without going into the game and solving their problems, as the bot works with chat in both directions, but many are interested in it and here it is.
  
 **System requirements**: 
-* **Node.js 8.6.0 ** hasn't been tested on other versions 
-* **Mysql server **
+* **Node.js 8.6.0 ** hasn't been tested on other versions**
+* **Mysql server**
  
-** what this bot can do **: 
-* **Display game chat **, 
+**what this bot can do**: 
+* **Display game chat**, 
 * **Send messages to the server sent to the same channel**, 
-* **Send a bonus for linking an account to discord **, 
-* **Mute (with the BetterChatMute plugin installed) ** 
+* **Send a bonus for linking an account to discord**, 
+* **Mute (with the BetterChatMute plugin installed)** 
  
-** Required npm plugins**: 
-* **discord.io ** - `npm install izy521 / discord.io` 
-* **mysql ** - `npm install mysql` 
-* **body-parser ** - `npm install body-parser` 
-* **WebSocket ** - `npm install ws` 
-* **express ** - `npm install express`
+**Required npm plugins**: 
+* **discord.io** - `npm install izy521 / discord.io` 
+* **mysql** - `npm install mysql` 
+* **body-parser** - `npm install body-parser` 
+* **WebSocket** - `npm install ws` 
+* **express** - `npm install express`
  
 Also for the bot you need to place all the roles IDs and register all the settings in RustDiscordBot.js 
 
