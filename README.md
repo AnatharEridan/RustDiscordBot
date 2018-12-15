@@ -1,4 +1,4 @@
-###Русский
+### Русский
 
 **Внимание для этого плагина требуется VPS, либо Деплой на подобии Heroku или OpenShift, либо любая машина где можно поставить Nodejs. Так же для него необходима MySql база,можете найти на любом хостинге.**
 
@@ -25,7 +25,7 @@
 
 **Внимание: перед использованием чата,администрации и модераторам необходимо пройти привязку командой /disreg.**
 
-###English
+### English
 
  
 ** Attention for this plugin requires VPS, or Deploy on the similarity of Heroku or OpenShift, or any machine where you can install Nodejs. You also need MySql database for it, you can find it on any hosting. **
