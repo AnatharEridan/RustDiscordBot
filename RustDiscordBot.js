@@ -225,7 +225,7 @@ function SendBonus(message) {
      Message: `disbonus ${message}`,
      Name: 'WebRcon',
    });
-   socketpve.send(packet);
+   socket.send(packet);
  }
 function mute(message) {
    const packet = JSON.stringify({
