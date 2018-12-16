@@ -102,33 +102,31 @@ cmd = args[0];
 		{
 			var sql = "SELECT steamid,timecode,confirmed FROM ?? WHERE timecode = ?";
 			var query = connection.query(sql, [RegisterTable, args[1]], function(err, result) {
-				var steamid = result[0].steamid;
-				if(result.length!==0 && result[0].confirmed==="false"){
-					var sql2 = "UPDATE ?? SET `discordid` =?,`confirmed` =? WHERE `timecode` = ?";
-					var query2 = connection.query(sql2, [RegisterTable, userID,"true",args[1]], function(err, result) {
-
-					confirmregister(steamid+" "+userID+" true");
-					bot.addToRole({"serverID":serverID,"userID":userID,"roleID":ChatRole},function(err,response) {
-						if (err) console.error(err);
-					});
-					bot.sendMessage({
-					to: userID,
-					message: 'Вы успешно подтвердили регистрацию,вам выдана роль с доступом к чат серверу'
-					});
-						});
-				}
-				if(result[0].confirmed=="true"){
+        if(result.length===0){
+          bot.sendMessage({
+          to: userID,
+          message: 'Извините но вашей заявки нету,напишите в игре /disreg'
+          });
+        }else if(result[0].confirmed=="true"){
 					bot.sendMessage({
 					to: userID,
 					message: 'Вы уже зарегистрированы'
 					});
-				}
-				if(result.length===0){
-					bot.sendMessage({
-					to: userID,
-					message: 'Извините но вашей заявки нету,напишите в игре /disreg'
-					});
-				}
+				}else if(result.length!==0 && result[0].confirmed==="false"){
+          var steamid = result[0].steamid;
+          var sql2 = "UPDATE ?? SET `discordid` =?,`confirmed` =? WHERE `timecode` = ?";
+          var query2 = connection.query(sql2, [RegisterTable, userID,"true",args[1]], function(err, result) {
+
+          confirmregister(steamid+" "+userID+" true");
+          bot.addToRole({"serverID":serverID,"userID":userID,"roleID":ChatRole},function(err,response) {
+            if (err) console.error(err);
+          });
+          bot.sendMessage({
+          to: userID,
+          message: 'Вы успешно подтвердили регистрацию,вам выдана роль с доступом к чат серверу'
+          });
+            });
+        }
 			});
 
 		}
@@ -137,7 +135,17 @@ cmd = args[0];
     var query = connection.query(sql, [RegisterTable, userID], function(err, result) {
       var steamid = result[0].steamid;
       var discordid = result[0].discordid;
-      if(result[0].confirmed=="true"){
+      if(result.length===0){
+        bot.sendMessage({
+        to: userID,
+        message: 'Извините но вы не зарегистрированы,напишите в игре /disreg'
+        });
+      }else if(result[0].confirmed=="false"){
+        bot.sendMessage({
+        to: userID,
+        message: 'Вы не подтвердили вашу регистраци напишите !confirm и номер который вам выдан был в игре'
+        });
+      }else if(result[0].confirmed=="true"){
         var sql3 = "SELECT steamid,discordid,gived FROM ?? WHERE discordid = ?";
         var query3 = connection.query(sql3, [BonusTable, userID], function(err, result3) {
         if(result3.length===0){
@@ -152,18 +160,6 @@ cmd = args[0];
       });
     }
       });
-      }
-      if(result[0].confirmed=="false"){
-        bot.sendMessage({
-        to: userID,
-        message: 'Вы не подтвердили вашу регистраци напишите !confirm и номер который вам выдан был в игре'
-        });
-      }
-      if(result.length===0){
-        bot.sendMessage({
-        to: userID,
-        message: 'Извините но вы не зарегистрированы,напишите в игре /disreg'
-        });
       }
   });
     }
