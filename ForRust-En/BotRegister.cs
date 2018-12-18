@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,14 +16,14 @@ namespace Oxide.Plugins {
 		private System.Random random = new System.Random();
 		private StoredData DataBase = new StoredData();
 
-		private string AdminPrefix = "<color=red>[Администратор]</color>";
-		private string ModerPrefix = "<color=green>[Модератор]</color>";
+		private string AdminPrefix = "<color=red>[Administrator]</color>";
+		private string ModerPrefix = "<color=green>[Moderator]</color>";
 		private string VipPrefix = "<color=yellow>[Vip]</color>";
-		private string PlayerPrefix = "<color=orange>[Из Discord'a]</color>";
-		private string ConsoleAdminPrefix = "[Администратор]";
-		private string ConsoleModerPrefix = "[Модератор]";
+		private string PlayerPrefix = "<color=orange>[From Discord]</color>";
+		private string ConsoleAdminPrefix = "[Administrator]";
+		private string ConsoleModerPrefix = "[Moderator]";
 		private string ConsoleVipPrefix = "[Vip]";
-		private string ConsolePlayerPrefix = "[Из Discord'a]";
+		private string ConsolePlayerPrefix = "[From Discord]";
 
 		private string BotUrl = "http://ip:3000/rustrequest";
 		private string BotBonusUrl = "http://ip:3000/rustbonus";
@@ -43,8 +43,8 @@ namespace Oxide.Plugins {
         {
             lang.RegisterMessages(new Dictionary<string, string>()
             {
-                ["ApplicationReply"] = "<color=orange>[Discord]</color>Вы успешно подали заявку на регистрацию, пожалуйста подтвердите регистрацию написав в личные сообщения нашему боту в дискорде команду <color=green>!confirm {0}</color>",
-	            ["ApplicationAlreadySent"] = "Вы уже подали заявку"
+                ["ApplicationReply"] = "<color=orange>[Discord]</color> You have successfully submitted an application for registration, please confirm the registration by writing a command in your private messages to our bot in the discord, Command: <color=green>!confirm {0}</color>",
+	            ["ApplicationAlreadySent"] = "You have already submitted an application"
             }, this);
         }
 

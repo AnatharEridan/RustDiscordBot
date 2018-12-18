@@ -4,23 +4,23 @@ const Sequelize = require('sequelize');
 var bodyParser = require("body-parser");
 var express = require('express');
 
-var ExpressPort = 3000; //Порт Web Сервера
-var DiscordToken = ""; // Токен Discord Бота
-var serverID = ""; //ID Дискорд сервера
-var AdminRole = ""; //ID роли Администратора
-var ModerRole = ""; //ID роли Модератора
-var VipRole = ""; //ID роли Випа
-var ChatRole = ""; //ID Роли для доступа к чату
-var ChatChannel = ""; //ID Канала где будет чат
-var RegisterTable = "ChatRegistred"; //Название таблицы в базе Mysql
-var BonusTable = "ChatBonus"; //Название таблицы в базе Mysql
-var RconIP = ''; //Тут и так понятно
-var RconPort = ''; //Тут и так понятно
-var RconPassword = ''; //Тут и так понятно
+var ExpressPort = 3000; //Web Server Port
+var DiscordToken = ""; // Bot Discord Token
+var serverID = ""; //ID Server discord
+var AdminRole = ""; //ID Administrator role
+var ModerRole = ""; //ID Moderator role
+var VipRole = ""; //ID vip role
+var ChatRole = ""; //ID chat role
+var ChatChannel = ""; //ID chat channel
+var RegisterTable = "ChatRegistred"; //registration tablename in Mysql
+var BonusTable = "ChatBonus"; //bonus tablename in Mysql
+var RconIP = ''; //rcon ip 
+var RconPort = ''; //rcon port
+var RconPassword = ''; //rcon password
 
-var RoleNotice1 = ""; //ID роли упоминания если замечено одно из слов в соабщении представленых ниже
-var RoleNotice2 = ""; //ID 2ой роли упоменания
-var ChatNoticeList = ['админ', 'адм', 'одмин', 'admin', 'adm'];
+var RoleNotice1 = ""; //ID role administartor for mentions when anyone say admin
+var RoleNotice2 = ""; //ID also second role 
+var ChatNoticeList = ['admin', 'adm', 'odmen',"odmin"];
 
 const RCON_IDENTIFIER_CONSOLE_RANGE_MIN = 1337000000;
 const RCON_IDENTIFIER_CONSOLE_RANGE_MAX = 1337999999;
@@ -130,7 +130,7 @@ cmd = args[0];
             if(CDB.length===0){
                 bot.sendMessage({
                 to: userID,
-                message: 'Извините но вашей заявки нету,напишите в игре /disreg'
+                message: 'Sorry, but your application is not present, write in the game / disreg'
                 });
             }else if(CDB[0].dataValues.confirmed=="true"){
               bot.sendMessage({
@@ -154,7 +154,7 @@ cmd = args[0];
               });
               bot.sendMessage({
               to: userID,
-              message: 'Вы успешно подтвердили регистрацию,вам выдана роль с доступом к чат серверу'
+              message: 'You have successfully confirmed the registration, you have been granted a role with access to the chat channel'
               });
 
             }
@@ -168,12 +168,12 @@ cmd = args[0];
       if(CDB.length===0){
         bot.sendMessage({
         to: userID,
-        message: 'Извините но вы не зарегистрированы,напишите в игре /disreg'
+        message: 'Sorry, but your application is not present, write in the game / disreg'
         });
       }else if(CDB[0].dataValues.confirmed=="false"){
           bot.sendMessage({
           to: userID,
-          message: 'Вы не подтвердили вашу регистраци напишите !confirm и номер который вам выдан был в игре'
+          message: 'You have not confirmed your registration, write! !confirm and the number that was issued to you was in the game'
           });
       }else if(CDB[0].dataValues.confirmed=="true"){
               var steamid = CDB[0].steamid;
@@ -193,7 +193,7 @@ cmd = args[0];
       }else if(BDB[0].dataValues.gived==="true"){
           bot.sendMessage({
             to: userID,
-            message: 'Вы уже получали бонус'
+            message: 'You have already received a bonus'
           });
         }
       });
@@ -275,7 +275,7 @@ function mute(message) {
     if(post.Check == "NotFind"){
       bot.sendMessage({
       to: post.Discordid,
-      message: 'я не нашел вас в игре,вам нужно зайти на наш сервер'
+      message: 'I did not find you in the game, you need to go to our server'
       });
     }
     if(post.Check == "Gived"){
@@ -285,7 +285,7 @@ function mute(message) {
       );
       bot.sendMessage({
       to: post.Discordid,
-      message: 'Вам выдан бонус за регистрацию в дискорде'
+      message: 'You have been given a bonus for registration in a discord'
       });
 
      }

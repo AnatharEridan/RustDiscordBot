@@ -16,7 +16,8 @@
 
 **Необходимые плагин npm**:
 * **discord.io** - `npm install izy521/discord.io`
-* **mysql** - `npm install mysql`
+* **sequelize** - `npm install sequelize`
+* **mysql2** - `npm install mysql2`
 * **body-parser** - `npm install body-parser`
 * **WebSocket** - `npm install ws`
 * **express** - `npm install express`
@@ -44,7 +45,8 @@ The plugin was written for myself that it would be convenient to communicate wit
  
 **Required npm plugins**: 
 * **discord.io** - `npm install izy521 / discord.io` 
-* **mysql** - `npm install mysql` 
+* **sequelize* - `npm install sequelize` 
+* **mysql2** - `npm install mysql2`
 * **body-parser** - `npm install body-parser` 
 * **WebSocket** - `npm install ws` 
 * **express** - `npm install express`
