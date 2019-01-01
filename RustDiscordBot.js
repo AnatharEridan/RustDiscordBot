@@ -149,7 +149,7 @@ cmd = args[0];
                  );
 
               confirmregister(steamid+" "+userID+" true");
-              bot.addToRole({"serverID":serverID,"userID":userID,"roleID":chatrole},function(err,response) {
+              bot.addToRole({"serverID":serverID,"userID":userID,"roleID":ChatRole},function(err,response) {
                 if (err) console.error(err); /* Failed to apply role */
               });
               bot.sendMessage({
